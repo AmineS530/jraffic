@@ -1,4 +1,4 @@
-package org.openjfx;
+package Jraffic;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

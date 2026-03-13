@@ -1,4 +1,4 @@
-module org.openjfx {
+module Jraffic {
     requires javafx.controls;
-    exports org.openjfx;
+    exports Jraffic;
 }

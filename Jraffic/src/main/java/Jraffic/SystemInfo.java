@@ -1,4 +1,4 @@
-package org.openjfx;
+package Jraffic;
 
 public class SystemInfo {
 

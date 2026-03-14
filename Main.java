@@ -1,3 +1,4 @@
+import javax.swing.Timer;
 import javax.swing.JFrame;
 
 import components.Jraffic;
@@ -5,6 +6,7 @@ import components.Jraffic;
 public class Main {
 
     public static void main(String[] args) {
+
         JFrame frame = new JFrame("Jraffic");
         Jraffic gamePanel = new Jraffic();
 
@@ -15,21 +17,11 @@ public class Main {
         frame.setResizable(false);
         frame.setVisible(true);
 
-        long lastTime = System.nanoTime();
-        // our loop
-        while (true) {
-            long now = System.nanoTime();
-            double dt = (double) ((now - lastTime) / 1000000000.0);
-            lastTime = now;
-
-            gamePanel.updateSimulation(dt);
+        Timer timer = new Timer(16, e -> {
+            gamePanel.updateSimulation(0.016);
             gamePanel.repaint();
+        });
 
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        timer.start();
     }
 }

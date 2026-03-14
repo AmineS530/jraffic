@@ -34,7 +34,7 @@ Ensure you have the **Java Development Kit (JDK)** installed on your system.
 
 2.  **Compile the Java files**:
     ```bash
-    javac Main.java Car.java TrafficLight.java RoadDrawer.java
+    javac -d build  *.java 
     ```
 
 3.  **Run the project**:

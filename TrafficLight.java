@@ -14,18 +14,18 @@ public class TrafficLight {
     public TrafficLight() {
         this.state = "down";
         this.nextState = "left";
-        this.timer = 1.0f;
+        this.timer = 1.0;
         this.clearing = false;
     }
-
+    // update light state
     public void updateWithCongestion(double dt, int upCount, int downCount, int leftCount, int rightCount,
             int capacity) {
-        if (this.timer > 0.0f) {
+        if (this.timer > 0.0) {
             this.timer -= dt;
         }
 
         if (this.clearing) {
-            if (this.timer <= 0.0f) {
+            if (this.timer <= 0.0) {
                 this.state = this.nextState;
                 this.clearing = false;
 
@@ -48,15 +48,15 @@ public class TrafficLight {
                 double ratio = (double) count / capacity;
 
                 if (ratio > 0.4f) {
-                    this.timer = 2.0f;
+                    this.timer = 2.0;
                 } else if (count > 0) {
-                    this.timer = 1.0f;
+                    this.timer = 1.0;
                 } else {
                     this.timer = 0.5f;
                 }
             }
         } else {
-            if (this.timer <= 0.0f) {
+            if (this.timer <= 0.0) {
                 this.nextState = calculatePriority(upCount, downCount, leftCount, rightCount);
                 this.state = "ALL_RED";
                 this.clearing = true;
@@ -64,12 +64,13 @@ public class TrafficLight {
             }
         }
     }
-
+    // calculate priority depend on xhal mn car kayna fkola road (so take road that have akbar cars_count)
     private String calculatePriority(int up, int down, int left, int right) {
         int[] counts = { down, left, up, right };
         int currentIdx = Arrays.asList(LIGHTS).indexOf(this.state);
-        if (currentIdx == -1)
+        if (currentIdx == -1) {
             currentIdx = 0;
+        }
 
         int[] filteredCounts = new int[3];
         int idx = 0;
@@ -93,10 +94,10 @@ public class TrafficLight {
     }
 
     public void drawLights(Graphics2D g, int screenWidth, int screenHeight) {
-        double cx = screenWidth / 2.0f;
-        double cy = screenHeight / 2.0f;
-        double gap = 60.0f;
-        int r = 16; // diameter in java rather than radius
+        double cx = screenWidth / 2.0;
+        double cy = screenHeight / 2.0;
+        double gap = 60.0;
+        int r = 16;
 
         Color topLeftColor = state.equals("down") ? Color.GREEN : Color.RED;
         Color topRightColor = state.equals("left") ? Color.GREEN : Color.RED;

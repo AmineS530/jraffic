@@ -8,42 +8,39 @@ public class RoadDrawer {
     public static final Color GOLD = new Color(255, 215, 0);
 
     public static void drawRoad(Graphics2D g, int screenWidth, int screenHeight) {
-        double gap = 60.0f;
-        double thickness = 3.0f;
+        double gap = 60.0;
+        double thickness = 3.0;
 
         g.setStroke(new BasicStroke((float) thickness));
         g.setColor(GOLD);
 
-        // Vertical lines
-        g.draw(new Line2D.Double(screenWidth / 2.0f - gap, screenHeight / 2.0f - gap, screenWidth / 2.0f - gap, 0));
-        g.draw(new Line2D.Double(screenWidth / 2.0f + gap, screenHeight / 2.0f - gap, screenWidth / 2.0f + gap, 0));
-        g.draw(new Line2D.Double(screenWidth / 2.0f + gap, screenHeight / 2.0f + gap, screenWidth / 2.0f + gap,
+        g.draw(new Line2D.Double(screenWidth / 2.0 - gap, screenHeight / 2.0 - gap, screenWidth / 2.0 - gap, 0));
+        g.draw(new Line2D.Double(screenWidth / 2.0 + gap, screenHeight / 2.0 - gap, screenWidth / 2.0 + gap, 0));
+        g.draw(new Line2D.Double(screenWidth / 2.0 + gap, screenHeight / 2.0 + gap, screenWidth / 2.0 + gap,
                 screenHeight));
-        g.draw(new Line2D.Double(screenWidth / 2.0f - gap, screenHeight / 2.0f + gap, screenWidth / 2.0f - gap,
+        g.draw(new Line2D.Double(screenWidth / 2.0 - gap, screenHeight / 2.0 + gap, screenWidth / 2.0 - gap,
                 screenHeight));
-
-        // Horizontal lines
-        g.draw(new Line2D.Double(screenWidth / 2.0f + gap, screenHeight / 2.0f - gap, screenWidth,
-                screenHeight / 2.0f - gap));
-        g.draw(new Line2D.Double(screenWidth / 2.0f + gap, screenHeight / 2.0f + gap, screenWidth,
-                screenHeight / 2.0f + gap));
-        g.draw(new Line2D.Double(screenWidth / 2.0f - gap, screenHeight / 2.0f + gap, 0, screenHeight / 2.0f + gap));
-        g.draw(new Line2D.Double(screenWidth / 2.0f - gap, screenHeight / 2.0f - gap, 0, screenHeight / 2.0f - gap));
+        g.draw(new Line2D.Double(screenWidth / 2.0 + gap, screenHeight / 2.0 - gap, screenWidth,
+                screenHeight / 2.0 - gap));
+        g.draw(new Line2D.Double(screenWidth / 2.0 + gap, screenHeight / 2.0 + gap, screenWidth,
+                screenHeight / 2.0 + gap));
+        g.draw(new Line2D.Double(screenWidth / 2.0 - gap, screenHeight / 2.0 + gap, 0, screenHeight / 2.0 + gap));
+        g.draw(new Line2D.Double(screenWidth / 2.0 - gap, screenHeight / 2.0 - gap, 0, screenHeight / 2.0 - gap));
 
         // Black roads
         g.setColor(Color.BLACK);
-        g.fillRect((int) (screenWidth / 2.0f - gap), 0, (int) (gap * 2), screenHeight);
-        g.fillRect(0, (int) (screenHeight / 2.0f - gap), screenWidth, (int) (gap * 2));
+        g.fillRect((int) (screenWidth / 2.0 - gap), 0, (int) (gap * 2), screenHeight);
+        g.fillRect(0, (int) (screenHeight / 2.0 - gap), screenWidth, (int) (gap * 2));
 
-        drawDashedMiddleLines(g, screenWidth, screenHeight, 20.0f);
+        drawDashedMiddleLines(g, screenWidth, screenHeight, 20.0);
     }
 
-    private static void drawDashedMiddleLines(Graphics2D g, int w, int h, float gap) {
-        double cx = w / 2.0f;
-        double cy = h / 2.0f;
-        double dash = 18.0f;
-        double space = 12.0f;
-        double thickness = 2.0f;
+    private static void drawDashedMiddleLines(Graphics2D g, int w, int h, double gap) {
+        double cx = w / 2.0;
+        double cy = h / 2.0;
+        double dash = 18.0;
+        double space = 12.0;
+        double thickness = 2.0;
 
         drawDashedLine(g, cx, 0, cx, cy - gap, dash, space, thickness, Color.YELLOW);
         drawDashedLine(g, cx, cy + gap, cx, h, dash, space, thickness, Color.YELLOW);
@@ -65,7 +62,7 @@ public class RoadDrawer {
 
         double stepX = dx / len;
         double stepY = dy / len;
-        double dist = 0.0f;
+        double dist = 0.0;
 
         while (dist < len) {
             double startX = x1 + stepX * dist;

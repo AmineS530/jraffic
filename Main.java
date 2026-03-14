@@ -38,33 +38,33 @@ public class Main extends JPanel implements KeyListener {
         }
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            float x = w / 2.0f + 15.0f;
-            float y = h - 35.0f;
+            double x = w / 2.0f + 15.0f;
+            double y = h - 35.0f;
             if (canSpawn("up", x, y))
                 cars.add(new Car("up", 30, 30, x, y, rand.nextInt(3) + 1));
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            float x = 10.0f;
-            float y = h / 2.0f + 15.0f;
+            double x = 10.0f;
+            double y = h / 2.0f + 15.0f;
             if (canSpawn("right", x, y))
                 cars.add(new Car("right", 30, 30, x, y, rand.nextInt(3) + 1));
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            float x = w / 2.0f - 45.0f;
-            float y = 10.0f;
+            double x = w / 2.0f - 45.0f;
+            double y = 10.0f;
             if (canSpawn("down", x, y))
                 cars.add(new Car("down", 30, 30, x, y, rand.nextInt(3) + 1));
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            float x = w - 35.0f;
-            float y = h / 2.0f - 45.0f;
+            double x = w - 35.0f;
+            double y = h / 2.0f - 45.0f;
             if (canSpawn("left", x, y))
                 cars.add(new Car("left", 30, 30, x, y, rand.nextInt(3) + 1));
         }
         if (e.getKeyCode() == KeyEvent.VK_R) {
             int randomDir = rand.nextInt(4);
             String dir = "";
-            float x = 0, y = 0;
+            double x = 0, y = 0;
             switch (randomDir) {
                 case 0:
                     dir = "up";
@@ -114,17 +114,17 @@ public class Main extends JPanel implements KeyListener {
     }
 
     private int calculateLaneCapacity() {
-        float laneLength = 400.0f;
-        float vehicleLength = 30.0f;
-        float safetyGap = 50.0f;
+        double laneLength = 400.0f;
+        double vehicleLength = 30.0f;
+        double safetyGap = 50.0f;
         return (int) Math.floor(laneLength / (vehicleLength + safetyGap));
     }
 
-    private boolean canSpawn(String direction, float x, float y) {
-        float safeDist = 60.0f;
+    private boolean canSpawn(String direction, double x, double y) {
+        double safeDist = 60.0f;
         for (Car car : cars) {
             if (car.direction.equals(direction)) {
-                float dist = (float) Math.sqrt(Math.pow(car.x - x, 2) + Math.pow(car.y - y, 2));
+                double dist = (double) Math.sqrt(Math.pow(car.x - x, 2) + Math.pow(car.y - y, 2));
                 if (dist < safeDist) {
                     return false;
                 }
@@ -133,7 +133,7 @@ public class Main extends JPanel implements KeyListener {
         return true;
     }
 
-    public void updateSimulation(float dt) {
+    public void updateSimulation(double dt) {
         int w = getWidth();
         int h = getHeight();
         int[] counts = countCarsPerLane();
@@ -142,7 +142,7 @@ public class Main extends JPanel implements KeyListener {
         trafficLight.updateWithCongestion(dt, counts[0], counts[1], counts[2], counts[3], laneCapacity);
 
         // Car Updates
-        float safetyGap = 50.0f;
+        double safetyGap = 50.0f;
         for (int i = 0; i < cars.size(); i++) {
             boolean blocked = false;
             Car myCar = cars.get(i);
@@ -153,7 +153,7 @@ public class Main extends JPanel implements KeyListener {
                 Car other = cars.get(j);
 
                 if (myCar.direction.equals(other.direction)) {
-                    float dist = (float) Math.sqrt(Math.pow(myCar.x - other.x, 2) + Math.pow(myCar.y - other.y, 2));
+                    double dist = (double) Math.sqrt(Math.pow(myCar.x - other.x, 2) + Math.pow(myCar.y - other.y, 2));
                     if (dist < safetyGap) {
                         boolean isAhead = false;
                         switch (myCar.direction) {
@@ -221,7 +221,7 @@ public class Main extends JPanel implements KeyListener {
 
         while (true) {
             long now = System.nanoTime();
-            float dt = (float) ((now - lastTime) / 1000000000.0);
+            double dt = (double) ((now - lastTime) / 1000000000.0);
             lastTime = now;
 
             gamePanel.updateSimulation(dt);

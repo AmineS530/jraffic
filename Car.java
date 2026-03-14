@@ -4,19 +4,19 @@ public class Car {
     public String direction;
     public int width;
     public int height;
-    public float x;
-    public float y;
+    public double x;
+    public double y;
     public Color color;
-    public float speed;
+    public double speed;
 
-    public Car(String direction, int width, int height, float x, float y, int colorType) {
+    public Car(String direction, int width, int height, double x, double y, int colorType) {
         this.direction = direction;
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         this.speed = 400.0f;
-        
+
         // 1 = YELLOW, 2 = BLUE, others = RED
         if (colorType == 1) {
             this.color = Color.YELLOW;
@@ -27,7 +27,7 @@ public class Car {
         }
     }
 
-    public void update(float dt, String state, boolean blocked, int screenWidth, int screenHeight) {
+    public void update(double dt, String state, boolean blocked, int screenWidth, int screenHeight) {
         if (blocked) {
             return;
         }
@@ -37,12 +37,13 @@ public class Car {
                 if (y >= screenHeight / 2.0f + 12.0f && y <= screenHeight / 2.0f + 18.0f && color.equals(Color.RED)) {
                     y = screenHeight / 2.0f + 15.0f;
                     x += speed * dt;
-                } else if (y >= screenHeight / 2.0f - 48.0f && y <= screenHeight / 2.0f - 43.0f && color.equals(Color.YELLOW)) {
+                } else if (y >= screenHeight / 2.0f - 48.0f && y <= screenHeight / 2.0f - 43.0f
+                        && color.equals(Color.YELLOW)) {
                     y = screenHeight / 2.0f - 45.0f;
                     x -= speed * dt;
                 } else {
-                    float stopLine = screenHeight / 2.0f + 65.0f;
-                    float clearLine = screenHeight / 2.0f + 60.0f;
+                    double stopLine = screenHeight / 2.0f + 65.0f;
+                    double clearLine = screenHeight / 2.0f + 60.0f;
 
                     if (state.equals(direction)) {
                         y -= speed * dt;
@@ -57,12 +58,13 @@ public class Car {
                 if (y >= screenHeight / 2.0f - 48.0f && y <= screenHeight / 2.0f - 43.0f && color.equals(Color.RED)) {
                     y = screenHeight / 2.0f - 45.0f;
                     x -= speed * dt;
-                } else if (y >= screenHeight / 2.0f + 12.0f && y <= screenHeight / 2.0f + 18.0f && color.equals(Color.YELLOW)) {
+                } else if (y >= screenHeight / 2.0f + 12.0f && y <= screenHeight / 2.0f + 18.0f
+                        && color.equals(Color.YELLOW)) {
                     y = screenHeight / 2.0f + 15.0f;
                     x += speed * dt;
                 } else {
-                    float stopLine = screenHeight / 2.0f - 95.0f;
-                    float clearLine = screenHeight / 2.0f - 90.0f;
+                    double stopLine = screenHeight / 2.0f - 95.0f;
+                    double clearLine = screenHeight / 2.0f - 90.0f;
 
                     if (state.equals(direction)) {
                         y += speed * dt;
@@ -77,12 +79,13 @@ public class Car {
                 if (x >= screenWidth / 2.0f + 12.0f && x <= screenWidth / 2.0f + 18.0f && color.equals(Color.RED)) {
                     x = screenWidth / 2.0f + 15.0f;
                     y -= speed * dt;
-                } else if (x >= screenWidth / 2.0f - 48.0f && x <= screenWidth / 2.0f - 42.0f && color.equals(Color.YELLOW)) {
+                } else if (x >= screenWidth / 2.0f - 48.0f && x <= screenWidth / 2.0f - 42.0f
+                        && color.equals(Color.YELLOW)) {
                     x = screenWidth / 2.0f - 45.0f;
                     y += speed * dt;
                 } else {
-                    float stopLine = screenWidth / 2.0f + 65.0f;
-                    float clearLine = screenWidth / 2.0f + 60.0f;
+                    double stopLine = screenWidth / 2.0f + 65.0f;
+                    double clearLine = screenWidth / 2.0f + 60.0f;
 
                     if (state.equals(direction)) {
                         x -= speed * dt;
@@ -97,12 +100,13 @@ public class Car {
                 if (x >= screenWidth / 2.0f - 48.0f && x <= screenWidth / 2.0f - 42.0f && color.equals(Color.RED)) {
                     x = screenWidth / 2.0f - 45.0f;
                     y += speed * dt;
-                } else if (x >= screenWidth / 2.0f + 12.0f && x <= screenWidth / 2.0f + 18.0f && color.equals(Color.YELLOW)) {
+                } else if (x >= screenWidth / 2.0f + 12.0f && x <= screenWidth / 2.0f + 18.0f
+                        && color.equals(Color.YELLOW)) {
                     x = screenWidth / 2.0f + 15.0f;
                     y -= speed * dt;
                 } else {
-                    float stopLine = screenWidth / 2.0f - 95.0f;
-                    float clearLine = screenWidth / 2.0f - 90.0f;
+                    double stopLine = screenWidth / 2.0f - 95.0f;
+                    double clearLine = screenWidth / 2.0f - 90.0f;
 
                     if (state.equals(direction)) {
                         x += speed * dt;

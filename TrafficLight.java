@@ -6,10 +6,10 @@ import java.util.Arrays;
 public class TrafficLight {
     public String state;
     public String nextState;
-    public float timer;
+    public double timer;
     public boolean clearing;
-    
-    private static final String[] LIGHTS = {"down", "left", "up", "right"};
+
+    private static final String[] LIGHTS = { "down", "left", "up", "right" };
 
     public TrafficLight() {
         this.state = "down";
@@ -18,7 +18,8 @@ public class TrafficLight {
         this.clearing = false;
     }
 
-    public void updateWithCongestion(float dt, int upCount, int downCount, int leftCount, int rightCount, int capacity) {
+    public void updateWithCongestion(double dt, int upCount, int downCount, int leftCount, int rightCount,
+            int capacity) {
         if (this.timer > 0.0f) {
             this.timer -= dt;
         }
@@ -30,13 +31,21 @@ public class TrafficLight {
 
                 int count = 0;
                 switch (this.state) {
-                    case "up": count = upCount; break;
-                    case "down": count = downCount; break;
-                    case "left": count = leftCount; break;
-                    case "right": count = rightCount; break;
+                    case "up":
+                        count = upCount;
+                        break;
+                    case "down":
+                        count = downCount;
+                        break;
+                    case "left":
+                        count = leftCount;
+                        break;
+                    case "right":
+                        count = rightCount;
+                        break;
                 }
 
-                float ratio = (float) count / capacity;
+                double ratio = (double) count / capacity;
 
                 if (ratio > 0.4f) {
                     this.timer = 2.0f;
@@ -57,10 +66,11 @@ public class TrafficLight {
     }
 
     private String calculatePriority(int up, int down, int left, int right) {
-        int[] counts = {down, left, up, right};
+        int[] counts = { down, left, up, right };
         int currentIdx = Arrays.asList(LIGHTS).indexOf(this.state);
-        if (currentIdx == -1) currentIdx = 0;
-        
+        if (currentIdx == -1)
+            currentIdx = 0;
+
         int[] filteredCounts = new int[3];
         int idx = 0;
         for (int i = 0; i < counts.length; i++) {
@@ -68,10 +78,10 @@ public class TrafficLight {
                 filteredCounts[idx++] = counts[i];
             }
         }
-        
+
         Arrays.sort(filteredCounts);
         int maxCount = filteredCounts[2];
-        
+
         int nextIdx = 0;
         for (int i = 0; i < counts.length; i++) {
             if (counts[i] == maxCount && i != currentIdx) {
@@ -83,9 +93,9 @@ public class TrafficLight {
     }
 
     public void drawLights(Graphics2D g, int screenWidth, int screenHeight) {
-        float cx = screenWidth / 2.0f;
-        float cy = screenHeight / 2.0f;
-        float gap = 60.0f;
+        double cx = screenWidth / 2.0f;
+        double cy = screenHeight / 2.0f;
+        double gap = 60.0f;
         int r = 16; // diameter in java rather than radius
 
         Color topLeftColor = state.equals("down") ? Color.GREEN : Color.RED;
@@ -94,16 +104,16 @@ public class TrafficLight {
         Color bottomRightColor = state.equals("up") ? Color.GREEN : Color.RED;
 
         g.setColor(topLeftColor);
-        g.fillOval((int)(cx - gap - 15 - r/2), (int)(cy - gap - 15 - r/2), r, r);
-        
+        g.fillOval((int) (cx - gap - 15 - r / 2), (int) (cy - gap - 15 - r / 2), r, r);
+
         g.setColor(topRightColor);
-        g.fillOval((int)(cx + gap + 15 - r/2), (int)(cy - gap - 15 - r/2), r, r);
-        
+        g.fillOval((int) (cx + gap + 15 - r / 2), (int) (cy - gap - 15 - r / 2), r, r);
+
         g.setColor(bottomLeftColor);
-        g.fillOval((int)(cx - gap - 15 - r/2), (int)(cy + gap + 15 - r/2), r, r);
-        
+        g.fillOval((int) (cx - gap - 15 - r / 2), (int) (cy + gap + 15 - r / 2), r, r);
+
         g.setColor(bottomRightColor);
-        g.fillOval((int)(cx + gap + 15 - r/2), (int)(cy + gap + 15 - r/2), r, r);
+        g.fillOval((int) (cx + gap + 15 - r / 2), (int) (cy + gap + 15 - r / 2), r, r);
 
         // Debug Text
         int marginX = 10;
@@ -114,7 +124,7 @@ public class TrafficLight {
         g.setFont(new Font("Arial", Font.BOLD, 24));
         g.setColor(Color.WHITE);
         g.drawString(String.format("Timer: %.1fs", timer), marginX, marginY + 20);
-        
+
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.setColor(statusColor);
         g.drawString("Active: " + statusText.toUpperCase(), marginX, marginY + 50);

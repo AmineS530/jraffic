@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    private static final Double WIDTH  = 1440.0;
+    private static final Double WIDTH = 1440.0;
     private static final Double HEIGHT = 900.0;
 
     @Override

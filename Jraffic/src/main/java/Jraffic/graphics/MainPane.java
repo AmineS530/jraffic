@@ -59,6 +59,8 @@ public class MainPane extends Pane {
             case LEFT -> canvasPanel.spawnVehicle(Direction.WEST);
             case RIGHT -> canvasPanel.spawnVehicle(Direction.EAST);
             case R -> canvasPanel.spawnVehicle(randomDirection());
+            // for testing
+            case F -> canvasPanel.stopVehicles();
             case ESCAPE -> System.exit(0);
             default -> {
             }

@@ -1,24 +1,21 @@
 package Jraffic;
 
+import Jraffic.graphics.MainPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-
-/**
- * JavaFX App
- */
 public class App extends Application {
+
+    private static final Double WIDTH  = 1440.0;
+    private static final Double HEIGHT = 900.0;
 
     @Override
     public void start(Stage stage) {
-        var javaVersion = SystemInfo.javaVersion();
-        var javafxVersion = SystemInfo.javafxVersion();
+        Scene scene = new Scene(new MainPane(), WIDTH, HEIGHT);
 
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        var scene = new Scene(new StackPane(label), 640, 480);
+        stage.setTitle("Jraffic");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
@@ -26,5 +23,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 }

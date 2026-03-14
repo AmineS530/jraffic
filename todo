@@ -1,0 +1,5 @@
+create lanes to able to control traffic
+change how car spawning works for lanes
+add changing car direction in the intersection
+figure how sprite animation will behave when turning (adding vehicle to the list of vehicles on the dir to turn to and update vehicle.setDirection())
+add traffic lights, sprite & logic

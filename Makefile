@@ -10,15 +10,14 @@ export JAVA_HOME := $(JDK_DIR)
 export PATH := $(JAVA_HOME)/bin:$(PATH)
 
 all: mvn jdk run
-	@echo "Java 25 ready"
 
 run:
 	@echo "Running..."
-	@mvn -f $(JAVAFX_PROJECT_DIR)/pom.xml clean javafx:run
+	@mvn -q -ntp -f $(JAVAFX_PROJECT_DIR)/pom.xml clean javafx:run
 
 clean:
 	@echo "Cleaning..."
-	@mvn -f $(JAVAFX_PROJECT_DIR)/pom.xml clean > /dev/null
+	@mvn -q -ntp -f $(JAVAFX_PROJECT_DIR)/pom.xml clean > /dev/null
 	@rm -rf $(JAVAFX_PROJECT_DIR)/target
 	@echo "Cleaned."
 
@@ -44,7 +43,7 @@ jdk:
 	else \
 		echo "Installing Java 25 locally..."; \
 		mkdir -p $(JDK_DIR); \
-		wget -O $(JDK_TAR) $(JDK_URL); \
+		wget -qO $(JDK_TAR) $(JDK_URL); \
 		tar -xzf $(JDK_TAR) -C $(JDK_DIR) --strip-components=1 ; \
 		rm $(JDK_TAR); \
 		echo "Java 25 installed in $(JDK_DIR)"; \

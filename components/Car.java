@@ -8,7 +8,7 @@ public class Car {
     public int height = 88;
     public double x, y;
     public Color color;
-    public double speed = 225.0;
+    public double speed = 425.0;
 
     public int spriteIndex = 0;
     public int animFrame = 0;

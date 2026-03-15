@@ -15,7 +15,7 @@ public class TrafficLight {
     public TrafficLight() {
         this.state = "down";
         this.nextState = "left";
-        this.timer = 1.0;
+        this.timer = 2.0;
         this.clearing = false;
     }
     // update light state
@@ -32,28 +32,20 @@ public class TrafficLight {
 
                 int count = 0;
                 switch (this.state) {
-                    case "up":
-                        count = upCount;
-                        break;
-                    case "down":
-                        count = downCount;
-                        break;
-                    case "left":
-                        count = leftCount;
-                        break;
-                    case "right":
-                        count = rightCount;
-                        break;
+                    case "up" -> count = upCount;
+                    case "down" -> count = downCount;
+                    case "left" -> count = leftCount;
+                    case "right" -> count = rightCount;
                 }
 
                 double ratio = (double) count / capacity;
 
                 if (ratio > 0.4f) {
-                    this.timer = 2.0;
+                    this.timer = 2.5;
                 } else if (count > 0) {
                     this.timer = 1.0;
                 } else {
-                    this.timer = 0.5f;
+                    this.timer = 1f;
                 }
             }
         } else {

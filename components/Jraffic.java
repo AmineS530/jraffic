@@ -1,20 +1,36 @@
 package components;
-import javax.swing.*;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
+import javax.swing.JPanel;
 
 public class Jraffic extends JPanel implements KeyListener {
     private List<Car> cars = new ArrayList<>();
     private TrafficLight trafficLight = new TrafficLight();
+
+    private final Set<Integer> heldKeys = new HashSet<>();
+
     private Random rand = new Random();
+    private final Sprites[] spriteSheets = {
+            new Sprites("assets/sprites/car_00.png"),
+            new Sprites("assets/sprites/car_01.png"),
+            new Sprites("assets/sprites/car_02.png")
+    };
 
     public Jraffic() {
-        setPreferredSize(new Dimension(900, 800));
+        setPreferredSize(new Dimension(1440, 900 ));
         setFocusable(true);
         addKeyListener(this);
     }
@@ -25,81 +41,53 @@ public class Jraffic extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
+        if (heldKeys.contains(key))
+            return;
+        heldKeys.add(key);
+        if (key == KeyEvent.VK_ESCAPE)
+            System.exit(0);
+        if (key == KeyEvent.VK_C || key == KeyEvent.VK_BACK_SPACE)
+            cars.clear();
+        if (key == KeyEvent.VK_UP)
+            trySpawn("up");
+        if (key == KeyEvent.VK_DOWN)
+            trySpawn("down");
+        if (key == KeyEvent.VK_LEFT)
+            trySpawn("left");
+        if (key == KeyEvent.VK_RIGHT)
+            trySpawn("right");
+        if (key == KeyEvent.VK_R)
+            trySpawn(randomDir());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        heldKeys.remove(e.getKeyCode());
+    }
+
+    private String randomDir() {
+        return new String[] { "up", "down", "left", "right" }[rand.nextInt(4)];
+    }
+
+    /** Computes the spawn position for a direction, then spawns if safe. */
+    private void trySpawn(String dir) {
         int w = getWidth();
         int h = getHeight();
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.exit(0);
-        }
-        if (e.getKeyCode() == KeyEvent.VK_C || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-            cars.clear();
+
+        record Point(double x, double y) {
         }
 
-        // cars li jayin mn South
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
-            double x = w / 2.0 + 15.0;
-            double y = h - 35.0;
-            if (canSpawn("up", x, y))
-                cars.add(new Car("up", 30, 30, x, y, rand.nextInt(3) + 1));
-        }
+        Point p = switch (dir) {
+            case "up" -> new Point(w / 2.0 + 35.0, h - 35.0);
+            case "down" -> new Point(w / 2.0 - 35.0, 10.0);
+            case "left" -> new Point(w , h / 2.0 - 35.0);
+            case "right" -> new Point(35.0, h / 2.0 + 35.0);
+            default -> new Point(0, 0);
+        };
 
-        // cars li jayin mn East
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            double x = 10.0;
-            double y = h / 2.0 + 15.0;
-            if (canSpawn("right", x, y))
-                cars.add(new Car("right", 30, 30, x, y, rand.nextInt(3) + 1));
-        }
-
-        // cars li jayin mn North
-        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            double x = w / 2.0 - 45.0;
-            double y = 10.0;
-            if (canSpawn("down", x, y))
-                cars.add(new Car("down", 30, 30, x, y, rand.nextInt(3) + 1));
-        }
-
-        // cars li jayin mn West
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            double x = w - 35.0;
-            double y = h / 2.0 - 45.0;
-            if (canSpawn("left", x, y))
-                cars.add(new Car("left", 30, 30, x, y, rand.nextInt(3) + 1));
-        }
-
-        // random direction
-        if (e.getKeyCode() == KeyEvent.VK_R) {
-            int randomDir = rand.nextInt(4);
-            String dir = "";
-            double x = 0, y = 0;
-            switch (randomDir) {
-                case 0:
-                    dir = "up";
-                    x = w / 2.0 + 15.0;
-                    y = h - 35.0;
-                    break;
-                case 1:
-                    dir = "down";
-                    x = w / 2.0 - 45.0;
-                    y = 10.0;
-                    break;
-                case 2:
-                    dir = "left";
-                    x = w - 35.0;
-                    y = h / 2.0 - 45.0;
-                    break;
-                case 3:
-                    dir = "right";
-                    x = 10.0;
-                    y = h / 2.0 + 15.0;
-                    break;
-            }
-            if (canSpawn(dir, x, y))
-                cars.add(new Car(dir, 30, 30, x, y, rand.nextInt(3) + 1));
-        }
+        if (canSpawn(dir, p.x(), p.y()))
+            cars.add(new Car(dir, p.x(), p.y(), rand.nextInt(3)));
     }
 
     // count kola direction xhal fih mn car
@@ -107,18 +95,10 @@ public class Jraffic extends JPanel implements KeyListener {
         int up = 0, down = 0, left = 0, right = 0;
         for (Car car : cars) {
             switch (car.direction) {
-                case "up":
-                    up++;
-                    break;
-                case "down":
-                    down++;
-                    break;
-                case "left":
-                    left++;
-                    break;
-                case "right":
-                    right++;
-                    break;
+                case "up" -> up++;
+                case "down" -> down++;
+                case "left" -> left++;
+                case "right" -> right++;
             }
         }
         return new int[] { up, down, left, right };
@@ -127,13 +107,13 @@ public class Jraffic extends JPanel implements KeyListener {
     // capacity
     private int calculateLaneCapacity() {
         double laneLength = 400.0;
-        double vehicleLength = 30.0;
-        double safetyGap = 50.0;
+        double vehicleLength = 88.0;
+        double safetyGap = 60.0;
         return (int) Math.floor(laneLength / (vehicleLength + safetyGap));
     }
 
     private boolean canSpawn(String direction, double x, double y) {
-        double safeDist = 60.0;
+        double safeDist =  88.0;
         for (Car car : cars) {
             if (car.direction.equals(direction)) {
                 double dist = (double) Math.sqrt(Math.pow(car.x - x, 2) + Math.pow(car.y - y, 2));
@@ -154,7 +134,7 @@ public class Jraffic extends JPanel implements KeyListener {
 
         trafficLight.updateWithCongestion(dt, counts[0], counts[1], counts[2], counts[3], laneCapacity);
 
-        double safetyGap = 50.0;
+        double safetyGap = 110.0;
         for (int i = 0; i < cars.size(); i++) {
             boolean blocked = false;
             Car myCar = cars.get(i);
@@ -169,18 +149,10 @@ public class Jraffic extends JPanel implements KeyListener {
                     if (dist < safetyGap) {
                         boolean isAhead = false;
                         switch (myCar.direction) {
-                            case "up":
-                                isAhead = other.y < myCar.y;
-                                break;
-                            case "down":
-                                isAhead = other.y > myCar.y;
-                                break;
-                            case "left":
-                                isAhead = other.x < myCar.x;
-                                break;
-                            case "right":
-                                isAhead = other.x > myCar.x;
-                                break;
+                            case "up" -> isAhead = other.y < myCar.y;
+                            case "down" -> isAhead = other.y > myCar.y;
+                            case "left" -> isAhead = other.x < myCar.x;
+                            case "right" -> isAhead = other.x > myCar.x;
                         }
                         if (isAhead) {
                             blocked = true;
@@ -193,7 +165,7 @@ public class Jraffic extends JPanel implements KeyListener {
         }
 
         // cars li passed get deleted
-        cars.removeIf(car -> car.x < -30.0 || car.x > w + 30.0 || car.y < -30.0 || car.y > h + 30.0);
+        cars.removeIf(car -> car.x < -88.0 || car.x > w + 88.0 || car.y < -88.0 || car.y > h + 88.0);
     }
 
     @Override
@@ -210,8 +182,12 @@ public class Jraffic extends JPanel implements KeyListener {
         trafficLight.drawLights(g2d, getWidth(), getHeight());
 
         for (Car car : cars) {
-            g2d.setColor(car.color);
-            g2d.fillRect((int) car.x, (int) car.y, car.width, car.height);
+            BufferedImage frame = spriteSheets[car.spriteIndex].getFrame(car.direction, car.animFrame);
+            if (frame != null) {
+                g2d.drawImage(frame, (int) (car.x - Sprites.FRAME_W / 2.0),
+                        (int) (car.y - Sprites.FRAME_H / 2.0),
+                        Sprites.FRAME_W, Sprites.FRAME_H, null);
+            }
         }
     }
 }

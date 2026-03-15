@@ -9,7 +9,7 @@ public class RoadDrawer {
     public static final Color GOLD = new Color(255, 215, 0);
 
     public static void drawRoad(Graphics2D g, int screenWidth, int screenHeight) {
-        double gap = 60.0;
+        double gap = 66.0;
         double thickness = 3.0;
 
         g.setStroke(new BasicStroke((float) thickness));

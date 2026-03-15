@@ -1,122 +1,125 @@
 package components;
+
 import java.awt.Color;
 
 public class Car {
     public String direction;
-    public int width;
-    public int height;
-    public double x;
-    public double y;
+    public int width = 88;
+    public int height = 88;
+    public double x, y;
     public Color color;
-    public double speed;
+    public double speed = 225.0;
 
-    public Car(String direction, int width, int height, double x, double y, int colorType) {
+    public int spriteIndex = 0;
+    public int animFrame = 0;
+    private double animTimer = 0.0;
+    private boolean turned = false;
+
+    private static final double ANIM_INTERVAL = 0.08;
+    private static final double BAND_RADIUS = 3.0;
+
+    public Car(String direction, double x, double y, int colorType) {
         this.direction = direction;
-        this.width = width;
-        this.height = height;
         this.x = x;
         this.y = y;
-        this.speed = 400.0;
+        this.spriteIndex = colorType % 3;
+        this.color = colorType == 1 ? Color.YELLOW
+                : colorType == 2 ? Color.BLUE
+                        : Color.RED;
+    }
 
-        if (colorType == 1) {
-            this.color = Color.YELLOW;
-        } else if (colorType == 2) {
-            this.color = Color.BLUE;
-        } else {
-            this.color = Color.RED;
+    public void update(double dt, String state, boolean blocked, int sw, int sh) {
+        if (blocked)
+            return;
+        advanceAnim(dt);
+
+        double cx = sw / 2.0;
+        double cy = sh / 2.0;
+
+        switch (direction) {
+            case "up" -> updateAxis(dt, state, y, cy, -1, true);
+            case "down" -> updateAxis(dt, state, y, cy, +1, true);
+            case "left" -> updateAxis(dt, state, x, cx, -1, false);
+            case "right" -> updateAxis(dt, state, x, cx, +1, false);
         }
     }
 
-    public void update(double dt, String state, boolean blocked, int screenWidth, int screenHeight) {
-        if (blocked) {
-            return;
+    // ── Core movement ─────────────────────────────────────────────────────────
+
+    private void updateAxis(double dt, String state,
+            double pos, double center, int sign,
+            boolean vertical) {
+        // RED turns at the near band, YELLOW at the far band
+        double nearBand = center + sign * (-40.0);
+        double farBand = center + sign * (35.0);
+        double stopLine = center + sign * (-132.0);
+        double clearLine = center + sign * (-100.0);
+
+        if (!turned && inBand(pos, nearBand) && color == Color.RED) {
+            snapAndTurn(dt, sign, vertical, nearBand, true);
+        } else if (!turned && inBand(pos, farBand) && color == Color.YELLOW) {
+            snapAndTurn(dt, sign, vertical, farBand, false);
+        } else {
+            stopOnRed(dt, state, stopLine, clearLine, sign, vertical);
+        }
+    }
+
+    private void snapAndTurn(double dt, int sign, boolean vertical,
+            double snapPos, boolean towardsPositive) {
+        int crossSign = towardsPositive ? sign * -1 : sign;
+
+        if (vertical) {
+            y = snapPos;
+            x += crossSign * speed * dt;
+            direction = towardsPositive ? (sign == -1 ? "right" : "left")
+                    : (sign == -1 ? "left" : "right");
+        } else {
+            x = snapPos;
+            y -= crossSign * speed * dt;
+            direction = towardsPositive ? (sign == -1 ? "up" : "down")
+                    : (sign == -1 ? "down" : "up");
+        }
+        turned = true;
+    }
+
+    /** Moves along main axis, clamping to stopLine when the light is red. */
+    private void stopOnRed(double dt, String state,
+            double stopLine, double clearLine,
+            int sign, boolean vertical) {
+        double pos = vertical ? y : x;
+        double step = sign * speed * dt;
+        boolean approaching = sign == -1 ? pos >= stopLine : pos <= stopLine;
+        boolean past = sign == -1 ? pos < clearLine : pos > clearLine;
+
+        double newPos;
+        if (state.equals(direction)) {
+            newPos = pos + step; // green
+        } else if (approaching) {
+            newPos = sign == -1 ? Math.max(pos + step, stopLine) // clamp
+                    : Math.min(pos + step, stopLine);
+        } else if (past) {
+            newPos = pos + step; // past — keep going
+        } else {
+            return; // stopped at line
         }
 
-        switch (direction) {
-            case "up":
-                if (y >= screenHeight / 2.0 + 12.0 && y <= screenHeight / 2.0 + 18.0 && color.equals(Color.RED)) {
-                    y = screenHeight / 2.0 + 15.0;
-                    x += speed * dt;
-                } else if (y >= screenHeight / 2.0 - 48.0 && y <= screenHeight / 2.0 - 43.0
-                        && color.equals(Color.YELLOW)) {
-                    y = screenHeight / 2.0 - 45.0;
-                    x -= speed * dt;
-                } else {
-                    double stopLine = screenHeight / 2.0 + 65.0;
-                    double clearLine = screenHeight / 2.0 + 60.0;
+        if (vertical)
+            y = newPos;
+        else
+            x = newPos;
+    }
 
-                    if (state.equals(direction)) {
-                        y -= speed * dt;
-                    } else if (y >= stopLine) {
-                        y = Math.max(y - speed * dt, stopLine);
-                    } else if (y < clearLine) {
-                        y -= speed * dt;
-                    }
-                }
-                break;
-            case "down":
-                if (y >= screenHeight / 2.0 - 48.0 && y <= screenHeight / 2.0 - 43.0 && color.equals(Color.RED)) {
-                    y = screenHeight / 2.0 - 45.0;
-                    x -= speed * dt;
-                } else if (y >= screenHeight / 2.0 + 12.0 && y <= screenHeight / 2.0 + 18.0
-                        && color.equals(Color.YELLOW)) {
-                    y = screenHeight / 2.0 + 15.0;
-                    x += speed * dt;
-                } else {
-                    double stopLine = screenHeight / 2.0 - 95.0;
-                    double clearLine = screenHeight / 2.0 - 90.0;
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
-                    if (state.equals(direction)) {
-                        y += speed * dt;
-                    } else if (y <= stopLine) {
-                        y = Math.min(y + speed * dt, stopLine);
-                    } else if (y > clearLine) {
-                        y += speed * dt;
-                    }
-                }
-                break;
-            case "left":
-                if (x >= screenWidth / 2.0 + 12.0 && x <= screenWidth / 2.0 + 18.0 && color.equals(Color.RED)) {
-                    x = screenWidth / 2.0 + 15.0;
-                    y -= speed * dt;
-                } else if (x >= screenWidth / 2.0 - 48.0 && x <= screenWidth / 2.0 - 42.0
-                        && color.equals(Color.YELLOW)) {
-                    x = screenWidth / 2.0 - 45.0;
-                    y += speed * dt;
-                } else {
-                    double stopLine = screenWidth / 2.0 + 65.0;
-                    double clearLine = screenWidth / 2.0 + 60.0;
-
-                    if (state.equals(direction)) {
-                        x -= speed * dt;
-                    } else if (x >= stopLine) {
-                        x = Math.max(x - speed * dt, stopLine);
-                    } else if (x < clearLine) {
-                        x -= speed * dt;
-                    }
-                }
-                break;
-            case "right":
-                if (x >= screenWidth / 2.0 - 48.0 && x <= screenWidth / 2.0 - 42.0 && color.equals(Color.RED)) {
-                    x = screenWidth / 2.0 - 45.0;
-                    y += speed * dt;
-                } else if (x >= screenWidth / 2.0 + 12.0 && x <= screenWidth / 2.0 + 18.0
-                        && color.equals(Color.YELLOW)) {
-                    x = screenWidth / 2.0 + 15.0;
-                    y -= speed * dt;
-                } else {
-                    double stopLine = screenWidth / 2.0 - 95.0;
-                    double clearLine = screenWidth / 2.0 - 90.0;
-
-                    if (state.equals(direction)) {
-                        x += speed * dt;
-                    } else if (x <= stopLine) {
-                        x = Math.min(x + speed * dt, stopLine);
-                    } else if (x > clearLine) {
-                        x += speed * dt;
-                    }
-                }
-                break;
+    private void advanceAnim(double dt) {
+        animTimer += dt;
+        if (animTimer >= ANIM_INTERVAL) {
+            animTimer -= ANIM_INTERVAL;
+            animFrame = (animFrame + 1) % 10_000;
         }
+    }
+
+    private boolean inBand(double value, double target) {
+        return Math.abs(value - target) <= BAND_RADIUS;
     }
 }

@@ -24,9 +24,9 @@ public class Jraffic extends JPanel implements KeyListener {
 
     private Random rand = new Random();
     private final Sprites[] spriteSheets = {
-            new Sprites("assets/sprites/car_00.png"),
-            new Sprites("assets/sprites/car_01.png"),
-            new Sprites("assets/sprites/car_02.png")
+            new Sprites("assets/car_00.png"),
+            new Sprites("assets/car_01.png"),
+            new Sprites("assets/car_02.png")
     };
 
     public Jraffic() {
